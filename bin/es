@@ -5,11 +5,14 @@ HOST=localhost
 PORT=9200
 DATA=""
 COMMAND=_cluster/health
+HUMAN="pretty&human"
+
+SEP='?'
 
 while [ ${#} -gt 0 ];do 
   OPTERR=0;
   OPTIND=1;
-  getopts "p:h:d:vnGDPO" arg;
+  getopts "p:h:d:vnGDPOm" arg;
   case "$arg" in
         p) PORT=$OPTARG             ;;
         h) HOST=$OPTARG             ;;
@@ -21,6 +24,7 @@ while [ ${#} -gt 0 ];do
         P) METHOD=PUT               ;;
         O) METHOD=POST              ;;
         \?) SET+=("$1")             ;;
+        m) unset HUMAN ; SEP=''     ;;
         *) echo "Coding error: '-$arg' is not handled by case">&2 ;;
   esac;
   shift;
@@ -40,4 +44,4 @@ SEP='?'
 
 echo "${NOOP:+NOT }Performing [$METHOD] on [$HOST]:[$PORT] at [$COMMAND] with [$DATA]"
 
-$NOOP curl $VERBOSE -X$METHOD $DATA http://$HOST:$PORT/$COMMAND$SEP"pretty&human"
+$NOOP curl $VERBOSE -X$METHOD $DATA http://$HOST:$PORT/$COMMAND$SEP$HUMAN
