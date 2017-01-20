@@ -5,9 +5,11 @@ HOST=localhost
 PORT=9200
 DATA=""
 COMMAND=_cluster/health
-HUMAN="pretty&human"
 
-SEP='?'
+VERBOSE='-sS'
+
+SEP='?' # We will append $SEP + $HUMAN to prettify the output, unless the command has a ? already
+HUMAN="pretty&human"
 
 while [ ${#} -gt 0 ];do 
   OPTERR=0;
@@ -39,9 +41,10 @@ then
 fi
 
 [ "$@" ] && COMMAND="$@"
-SEP='?'
+
+# If the command has a ? separator, then switch to & before pretty&human
 [[ $COMMAND =~ [$SEP] ]] && SEP='&'
 
-echo "${NOOP:+NOT }Performing [$METHOD] on [$HOST]:[$PORT] at [$COMMAND] with [$DATA]"
+[ "x$VERBOSE" != 'x-sS' ] && echo "${NOOP:+NOT }Performing [$METHOD] on [$HOST]:[$PORT] at [$COMMAND] with [$DATA]"
 
 $NOOP curl $VERBOSE -X$METHOD $DATA http://$HOST:$PORT/$COMMAND$SEP$HUMAN
