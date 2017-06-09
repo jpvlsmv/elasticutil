@@ -1,0 +1,41 @@
+#!/bin/bash
+# patch_template [-h [https://]host] [-p port] [-d deltafile.json] [-v] [-n] templatename
+# note, if https:// is specified, server and/or client certificates must be correct
+# deltafile.json looks like:
+# { "settings": 
+#   { "index": 
+#     { "routing": 
+#        { "allocation": 
+#          { 
+#            "total_shards_per_node": "7",
+#            "exclude": 
+#              {"role": "head"
+# }}}}}}
+
+HOST=${ES_HOST:-localhost}
+PORT=${ES_PORT:-9200}
+DELTA=-
+NOOP=
+
+while getopts "p:h:d:vn" arg; do
+   case "$arg" in
+       p) PORT=$OPTARG             ;;
+       h) HOST=$OPTARG             ;;
+       d) DELTA=$OPTARG            ;;
+       v) VERBOSE=-v               ;;
+       n) NOOP=echo                ;;
+   esac;
+#   shift;
+done
+
+shift $(($OPTIND - 1)) || (echo "Must provide an index name" >&2 ; exit 2)
+template=$*
+
+echo "Patching $template on $HOST:$PORT with file $DELTA"
+
+( cat $DELTA ;
+  curl -sS $VERBOSE $HOST:$PORT/_template/$template
+) |
+     jq -s '.[1].'$template' * .[0]'  |
+     $NOOP curl -sS $VERBOSE -XPUT $HOST:$PORT/_template/$template -d@- |
+     jq .
