@@ -1,9 +1,9 @@
 # elasticutil
-Wrapper for Elasticsearch REST API
+Wrappers for Elasticsearch REST API
 
 I got frustrated with dealing with curl in order to talk to my elasticsearch cluster.  So I scripted it.
 
-### es Usage
+## es Usage
 ```
 es [-p portnumber] [-h host ] [-d "json data to post" ] [-vnGDPO] rest/api/you/want[?arg=xxx]
   -v verbose
@@ -103,4 +103,4 @@ jmoore@home:~$ echo '{"aliases": {"alldata": {}}}' | patch_template sessions_tem
 jmoore@home:~$
 ```
 
-### Suggestions, pull requests, etc welcome!
+# Suggestions, pull requests, etc welcome!
