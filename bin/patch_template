@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright 2017 Joe Moore - MIT License https://opensource.org/licenses/MIT 
 # patch_template [-h [https://]host] [-p port] [-d deltafile.json] [-v] [-n] templatename
 # note, if https:// is specified, server and/or client certificates must be correct
 # deltafile.json looks like:
